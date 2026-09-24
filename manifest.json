@@ -1,0 +1,66 @@
+{
+  "manifest_version": 3,
+  "name": "Sunflower Land - Assistant & Treasure Radar",
+  "version": "2.0.0",
+  "description": "Smart Desert Digging Radar, Real-Time P2P Market Prices, Tasks Analyzer, Coin Rates & Farm Valuation for Sunflower Land.",
+  "action": {
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    },
+    "default_title": "Treasure Radar Engine"
+  },
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "sidePanel",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://sunflower-land.com/*",
+    "https://*.sunflower-land.com/*",
+    "https://*.minigames.sunflower-land.com/*",
+    "https://api.sunflower-land.com/*",
+    "https://d1g.uk/*",
+    "https://sfl.world/*",
+    "https://api.dexscreener.com/*",
+    "https://docs.google.com/*",
+    "https://*.googleusercontent.com/*"
+  ],
+  "content_scripts": [
+    {
+      "js": ["contentScript.js"],
+      "matches": [
+        "https://sunflower-land.com/*",
+        "https://*.sunflower-land.com/*",
+        "https://*.minigames.sunflower-land.com/*"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "matches": [
+        "https://sunflower-land.com/*",
+        "https://*.sunflower-land.com/*",
+        "https://*.minigames.sunflower-land.com/*"
+      ],
+      "resources": ["injectedHook.js"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}

@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sunflower Land - Assistant & Treasure Radar</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Vertical Sidebar (Identical to original mod sfl-ai-assistant.xyz) -->
+    <aside class="sidebar-nav" id="sidebarNav">
+      <!-- 1. Home / Farm / Desert Radar -->
+      <button class="s-nav-btn active" data-tab="desert" title="Sa Mạc (Radar Kho Báu)">
+        <svg class="s-nav-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22l8-8"></path><path d="M9 13l6-6"></path><path d="M14 6l4-4 4 4-4 4"></path><path d="M17 11l-3 3"></path></svg>
+        <span class="s-nav-tooltip">Radar Sa Mạc</span>
+      </button>
+
+      <!-- 2. Tasks / Deliveries -->
+      <button class="s-nav-btn" data-tab="tasks" title="Đơn Hàng (Tasks)">
+        <svg class="s-nav-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        <span class="s-nav-badge" id="tasksBadge" style="display: none;">0</span>
+        <span class="s-nav-tooltip">Đơn Hàng (Tasks)</span>
+      </button>
+
+      <!-- 3. Inventory -->
+      <button class="s-nav-btn" data-tab="inventory" title="Kho Đồ (Inventory)">
+        <svg class="s-nav-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+        <span class="s-nav-tooltip">Kho Đồ</span>
+      </button>
+
+      <!-- 4. Flowers -->
+      <button class="s-nav-btn" data-tab="flowers" title="Hoa & Lai Tạo">
+        <svg class="s-nav-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m4.5 3a4.5 4.5 0 1 1-4.5 4.5M16.5 12H15m-3 4.5a4.5 4.5 0 1 1-4.5-4.5M12 16.5V15m-4.5-3H9m3 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"></path></svg>
+        <span class="s-nav-tooltip">Hoa & Lai Tạo</span>
+      </button>
+
+      <!-- 5. Coin Rate -->
+      <button class="s-nav-btn" data-tab="coin" title="Tỷ Giá Coin (Coins per SFL)">
+        <svg class="s-nav-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path><path d="M7 6h1v4"></path><path d="m16.7 13.8.8.7"></path></svg>
+        <span class="s-nav-tooltip">Tỷ Giá Coin</span>
+      </button>
+
+      <!-- 6. Market P2P -->
+      <button class="s-nav-btn" data-tab="market" title="Thị Trường P2P (Market)">
+        <svg class="s-nav-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span class="s-nav-tooltip">Thị Trường P2P</span>
+      </button>
+
+      <!-- 7. Potions -->
+      <button class="s-nav-btn" data-tab="potion" title="Pha Chế Thuốc (Potion House)">
+        <svg class="s-nav-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2"></path><path d="M8.5 2h7"></path><path d="M14 6l5.3 10.6a3 3 0 0 1-2.7 4.4H7.4a3 3 0 0 1-2.7-4.4L10 6"></path></svg>
+        <span class="s-nav-tooltip">Pha Chế Thuốc</span>
+      </button>
+
+      <!-- 8. Profit -->
+      <button class="s-nav-btn" data-tab="profit" title="Lợi Nhuận Khai Thác">
+        <svg class="s-nav-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span class="s-nav-tooltip">Lợi Nhuận</span>
+      </button>
+
+      <!-- 9. Food List (Pets) -->
+      <button class="s-nav-btn" data-tab="foodlist" title="Món Ăn Thú Cưng (Food List - Pets)">
+        <svg class="s-nav-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6c1.5 1.5 1.5 4 0 5.5l-5.5 5.5c-1.5 1.5-4 1.5-5.5 0l-.5-.5a4 4 0 0 1-5.5-5.5l5.5-5.5c1.5-1.5 4-1.5 5.5 0z"></path><circle cx="16" cy="8" r="2"></circle></svg>
+        <span class="s-nav-tooltip">Food List</span>
+      </button>
+
+      <!-- 10. Memory Game (Lật Thẻ) -->
+      <button class="s-nav-btn" data-tab="memory" title="Trợ Lý Lật Thẻ (Memory)">
+        <svg class="s-nav-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect></svg>
+        <span class="s-nav-tooltip">Lật Thẻ (Memory)</span>
+      </button>
+
+      <!-- 11. Chaac's Temple (Đền Chaac) -->
+      <button class="s-nav-btn" data-tab="chaac" title="Trợ Lý Đền Chaac (Chaac's Temple - Simon Says)">
+        <svg class="s-nav-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V9l7-6 7 6v12M9 21v-6h6v6M12 3v3"></path></svg>
+        <span class="s-nav-tooltip">Đền Chaac</span>
+      </button>
+    </aside>
+
+    <!-- Main Viewport on Right -->
+    <div class="main-viewport">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-main">
+          <img src="icons/icon-48.png" class="app-icon" alt="Logo">
+          <div>
+            <h1 class="app-title">Sunflower Land Assistant</h1>
+            <p class="app-subtitle" id="headerSubtitle">Radar Sa Mạc & Trợ Lý Kinh Tế</p>
+          </div>
+        </div>
+        <div class="status-badge" id="connectionStatus">
+          <span class="status-dot dot-waiting"></span>
+          <span class="status-text" id="statusText">Chờ kết nối...</span>
+        </div>
+      </header>
+
+      <div class="panes-container">
+
+    <!-- ============================================================= -->
+    <!-- TAB 1: 🏜️ SA MẠC (DESERT RADAR - BẢO TOÀN 100% KHÔNG ĐỔI) -->
+    <!-- ============================================================= -->
+    <main class="tab-pane active" id="pane-desert">
+      <!-- Farm Info & Tools Bar -->
+      <div class="stats-bar">
+        <div class="stat-item" id="farmInfo">
+          <span class="stat-label">Trạng Thái</span>
+          <span class="stat-value" id="farmIdVal">Trực tiếp</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Cuốc Đã Đào</span>
+          <div class="stat-val-icon">
+            <img src="img/treasures/Sand Shovel.png" class="stat-icon" alt="Shovel">
+            <span class="stat-value" id="shovelVal">0</span>
+            <span class="stat-sub" id="shovelSub" title="Số cuốc còn trong túi đồ">(còn 0)</span>
+          </div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Khoan</span>
+          <div class="stat-val-icon">
+            <img src="img/treasures/Sand Drill.png" class="stat-icon" alt="Drill">
+            <span class="stat-value" id="drillVal">0</span>
+          </div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi (Streak)</span>
+          <span class="stat-value" id="streakVal">0</span>
+        </div>
+      </div>
+
+      <!-- Quick Actions Toolbar (Top of Desert Tab) -->
+      <div class="radar-quick-bar" id="radarQuickBar">
+        <button class="btn-top-practice" id="btnTopPractice" title="Bật/Tắt Chế độ Luyện Tập đào kho báu tương tác">🎯 Luyện Tập (Simulator)</button>
+        <button class="btn-top-action" id="btnTopRefresh" title="Làm mới lại dữ liệu bãi đào">🔄 Làm mới</button>
+        <button class="btn-top-action" id="btnTopDemo" title="Thử nghiệm trên dữ liệu mẫu">🧪 Demo</button>
+      </div>
+
+      <!-- Practice Mode Control Bar (Appears when Practice Mode is active) -->
+      <section class="practice-bar" id="practiceBar" style="display: none;">
+        <div class="practice-info">
+          <span class="practice-badge">🎮 LUYỆN TẬP</span>
+          <span class="practice-stat" id="practiceShovels">⛏️ Cuốc: 0 &nbsp;|&nbsp; ⚙️ Khoan: 0</span>
+          <span class="practice-stat" id="practiceTargets">Di vật: 0/3</span>
+        </div>
+        <div class="practice-tools" title="Chọn công cụ đào (Phím tắt: [1] Cuốc, [2] Khoan)">
+          <button class="btn-p-tool active tool-shovel" id="btnPracticeToolShovel" title="Cuốc đào: Mở từng ô 1x1 (Phím 1 hoặc S)">
+            <span class="tool-icon">⛏️</span>
+            <span class="tool-label">Cuốc (1x1)</span>
+            <span class="tool-key">1</span>
+          </button>
+          <button class="btn-p-tool tool-drill" id="btnPracticeToolDrill" title="Khoan cát: Mở khối 2x2 4 ô cùng lúc (Phím 2 hoặc D)">
+            <span class="tool-icon">⚙️</span>
+            <span class="tool-label">Khoan (2x2)</span>
+            <span class="tool-key">2</span>
+          </button>
+        </div>
+        <div class="practice-controls">
+          <button class="btn-p-action" id="btnPracticeNewGame" title="Tạo ván ngẫu nhiên mới (Phím R)">🎲 Ván mới</button>
+          <button class="btn-p-action" id="btnPracticeReveal" title="Hiện/ẩn toàn bộ vị trí di vật (Phím Cách)">👁️ Đáp án</button>
+          <button class="btn-p-action btn-p-exit" id="btnPracticeExit" title="Thoát chế độ luyện tập (Phím Esc)">↩️ Thoát</button>
+        </div>
+      </section>
+
+      <!-- Recommendation Banner (Radar Next Dig / Hoàn thành) -->
+      <section class="recommendation-banner" id="recommendationBanner">
+        <div class="rec-icon">⚡</div>
+        <div class="rec-content">
+          <div class="rec-title">GỢI Ý ĐÀO TIẾP THEO: <span class="rec-tile" id="recTileName">--</span></div>
+          <div class="rec-desc" id="recTileReason">Đang tính toán ma trận xác suất tối ưu...</div>
+          <div class="rec-drill-tip" id="recDrillTip" style="display: none;"></div>
+        </div>
+      </section>
+
+      <!-- 1. MA TRẬN ĐÀO CHÍNH (10x10 Desert Grid Map) -->
+      <section class="grid-section">
+        <div class="grid-container">
+          <!-- Top Column Labels (A-J) -->
+          <div class="grid-col-labels">
+            <div class="corner-cell"></div>
+            <div class="col-lbl">A</div><div class="col-lbl">B</div><div class="col-lbl">C</div><div class="col-lbl">D</div><div class="col-lbl">E</div>
+            <div class="col-lbl">F</div><div class="col-lbl">G</div><div class="col-lbl">H</div><div class="col-lbl">I</div><div class="col-lbl">J</div>
+          </div>
+
+          <!-- Board Rows -->
+          <div class="grid-body" id="gridBody">
+            <!-- Populated dynamically by app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- PredictionSet Details Panel -->
+      <section class="predict-panel" id="predictPanel" style="display: none;">
+        <div class="predict-panel-header">
+          <h3 id="predictPanelTitle">🎯 Chi tiết PredictionSet</h3>
+          <button id="closePredictPanelBtn" class="close-panel-btn" title="Đóng">✕</button>
+        </div>
+        <div id="predictPanelContent"></div>
+      </section>
+
+      <!-- 2. TODAY'S TREASURES -->
+      <section class="card todays-treasures-card">
+        <div class="card-header">
+          <h2 class="card-title">Today's Treasures <span class="card-date" id="todaysDate"></span></h2>
+          <span class="season-badge" id="seasonNameBadge">Di vật: Otter Pebble</span>
+        </div>
+        <div class="mini-patterns-grid" id="miniPatternsGrid">
+          <div class="target-item-placeholder">Chưa có dữ liệu bãi đào hôm nay. Hãy mở game Sunflower Land và bấm vào bãi sa mạc.</div>
+        </div>
+      </section>
+
+      <!-- 3. CHỨC NĂNG GỢI Ý DI VẬT -->
+      <section class="card hint-card" id="hintCard">
+        <div class="hint-header">
+          <button class="btn-hint" id="btnTreasureHint">
+            <span class="hint-icon">💡</span> Gợi ý di vật
+          </button>
+          <span class="hint-status" id="hintStatus">Bấm để xem danh sách vị trí di vật tối ưu</span>
+        </div>
+        <div class="hint-body" id="hintBody" style="display: none;">
+          <!-- Populated dynamically by app.js -->
+        </div>
+      </section>
+
+      <!-- Legend -->
+      <footer class="legend">
+        <div class="legend-item"><span class="legend-box box-target"></span> 🎯 Di vật mục tiêu</div>
+        <div class="legend-item"><span class="legend-box box-rec"></span> ⚡ Gợi ý AI (Tối ưu cuốc)</div>
+        <div class="legend-item"><span class="legend-box box-candidate"></span> 🔍 Thế di vật (1, 2...)</div>
+        <div class="legend-item"><span class="legend-box box-blocked"></span> 🛑 Vùng Cát (Bỏ qua)</div>
+        <div class="legend-item"><span class="legend-box box-bone"></span> 🦴 Mảnh xương (Đã có di vật)</div>
+        <div class="legend-item"><span class="legend-box box-secondary"></span> 🏺 Kho báu phụ (Bình, Gỗ...)</div>
+        <div class="legend-item"><span class="legend-box box-predicted-crab"></span> 🦀 Cua vành đai (Không đào)</div>
+      </footer>
+
+      <!-- Manual Test / Practice / Refresh tools -->
+      <div class="footer-actions">
+        <button class="btn-refresh" id="btnRefresh" title="Làm mới lại dữ liệu">🔄 Làm mới</button>
+        <button class="btn-demo" id="btnDemo" title="Thử nghiệm trên dữ liệu mẫu">🧪 Demo</button>
+        <button class="btn-practice" id="btnPracticeMode" title="Chế độ Luyện Tập đào kho báu tương tác">🎯 Luyện Tập</button>
+      </div>
+    </main>
+
+    <!-- ============================================================= -->
+    <!-- TAB 2: 📋 ĐƠN HÀNG (TASKS / DELIVERIES) -->
+    <!-- ============================================================= -->
+    <main class="tab-pane" id="pane-tasks" style="display: none;">
+      <!-- Tasks Summary Card (Styled exactly like original mod) -->
+      <div class="tasks-summary-card">
+        <div class="summary-top-row">
+          <span class="summary-title" id="tasksSummaryTitle">Tasks (UTC)</span>
+          <span class="summary-reset" id="tasksResetTime">Reset in --h --m</span>
+        </div>
+        <div class="summary-stats-grid">
+          <div class="summary-stat-row">
+            <span class="stat-check">✓</span>
+            <span class="stat-label">Delivered:</span>
+            <span class="stat-val" id="tasksDeliveredCount">0</span>
+          </div>
+          <div class="summary-stat-row">
+            <span class="stat-check">✓</span>
+            <span class="stat-label">Earned (SFL):</span>
+            <span class="stat-val"><span id="tasksEarnedSfl">0.00</span> <img src="img/Flower.png" class="stat-token-icon" alt="SFL"></span>
+          </div>
+          <div class="summary-stat-row">
+            <span class="stat-check">✓</span>
+            <span class="stat-label">Earned (Coin):</span>
+            <span class="stat-val"><span id="tasksEarnedCoins">0</span> <img src="img/coin.png" class="stat-token-icon" alt="Coins"></span>
+          </div>
+          <div class="summary-stat-row">
+            <span class="stat-check">✓</span>
+            <span class="stat-label">Spent (SFL):</span>
+            <span class="stat-val"><span id="tasksSpentSfl">0.000</span> <img src="img/Flower.png" class="stat-token-icon" alt="SFL"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="tasks-filter-bar">
+        <button class="filter-pill active" data-task-filter="all">Tất cả</button>
+        <button class="filter-pill" data-task-filter="ready">Đủ hàng giao ngay</button>
+        <button class="filter-pill" data-task-filter="missing">Thiếu hàng</button>
+        <button class="filter-pill" data-task-filter="profit">Đơn có lời</button>
+        <button class="filter-pill" data-task-filter="completed">Đã giao</button>
+      </div>
+
+      <!-- Orders List Container -->
+      <div class="tasks-list" id="tasksListContainer">
+        <div class="empty-state">
+          <div class="empty-icon">⏳</div>
+          <div class="empty-title">Chưa có dữ liệu đơn hàng</div>
+          <div class="empty-desc">Vui lòng mở game Sunflower Land và bấm vào hòm thư hoặc NPC giao hàng để nạp dữ liệu.</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ============================================================= -->
+    <!-- TAB 3: 📈 THỊ TRƯỜNG P2P (REAL-TIME MARKET) -->
+    <!-- ============================================================= -->
+    <main class="tab-pane" id="pane-market" style="display: none;">
+      <!-- Exchange Rates Banner -->
+      <div class="market-rate-banner">
+        <div class="rate-card">
+          <span class="rate-label">FLOWER / SFL</span>
+          <span class="rate-val" id="rateSflUsd">$0.168</span>
+          <span class="rate-change" id="rateSflChange">+0.0%</span>
+        </div>
+        <div class="rate-card">
+          <span class="rate-label">POL / USD</span>
+          <span class="rate-val" id="ratePolUsd">$0.107</span>
+        </div>
+        <div class="rate-card">
+          <span class="rate-label">COINS / SFL</span>
+          <span class="rate-val" id="rateCoinsSfl">1 SFL = 160 C</span>
+        </div>
+      </div>
+
+      <!-- Search & Category Filters -->
+      <div class="market-controls">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="marketSearchInput" class="search-input" placeholder="Tìm vật phẩm (Cà chua, Gỗ, Vàng, Ong...)...">
+        </div>
+        <button class="btn-refresh-market" id="btnRefreshMarket" title="Cập nhật giá mới nhất từ chợ P2P">🔄 Cập nhật giá</button>
+      </div>
+      <div class="market-updated-text" id="marketUpdatedText">Giá chợ P2P Sunflower Land (sfl.world)</div>
+
+      <div class="category-pills" id="marketCategoryPills">
+        <button class="cat-pill active" data-cat="all">Tất cả</button>
+        <button class="cat-pill" data-cat="crop">Cây trồng</button>
+        <button class="cat-pill" data-cat="fruit">Trái cây</button>
+        <button class="cat-pill" data-cat="resource">Khoáng sản & Gỗ</button>
+        <button class="cat-pill" data-cat="animal">Chăn nuôi</button>
+        <button class="cat-pill" data-cat="emblem">Phù hiệu</button>
+      </div>
+
+      <!-- Market Table -->
+      <div class="table-container">
+        <table class="market-table">
+          <thead>
+            <tr>
+              <th style="width: 48%;">Vật Phẩm</th>
+              <th style="width: 26%; text-align: right;">Giá Sàn P2P</th>
+              <th style="width: 26%; text-align: right;">Quy Đổi USD</th>
+            </tr>
+          </thead>
+          <tbody id="marketTableBody">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- ============================================================= -->
+    <!-- TAB 4: 🪙 TỶ GIÁ COIN (COIN RATE ENGINE) -->
+    <!-- ============================================================= -->
+    <main class="tab-pane" id="pane-coin" style="display: none;">
+      <!-- Best Crop Recommendation Banner -->
+      <div class="best-coin-banner" id="bestCoinRateBanner">
+        <div class="bc-icon">🌾</div>
+        <div class="bc-info">
+          <div class="bc-title">NÔNG SẢN ĐỔI COIN LỜI NHẤT HÔM NAY:</div>
+          <div class="bc-value" id="bestCropValue">Đang phân tích bảng giá P2P...</div>
+        </div>
+      </div>
+
+      <!-- Skill Toggle Bar -->
+      <div class="coin-toggle-bar">
+        <div class="coin-note">
+          💡 Tỷ giá = <code>Giá bán shop / Giá mua P2P</code>. Mua nông sản tỷ giá cao trên P2P rồi bán vào Shop để đổi ra nhiều Coin nhất!
+        </div>
+        <button class="btn-skill-toggle" id="btnToggleGreenThumb">
+          <span>🌿 Green Thumb (+10%):</span>
+          <span class="skill-state-badge" id="skillStateBadge">TẮT</span>
+        </button>
+      </div>
+
+      <!-- Coin Rates Table -->
+      <div class="table-container">
+        <table class="market-table coin-table">
+          <thead>
+            <tr>
+              <th>Nông Sản</th>
+              <th style="text-align: right;">Shop Bán</th>
+              <th style="text-align: right;">Giá P2P</th>
+              <th style="text-align: right;">Tỷ Giá (Coins/SFL)</th>
+            </tr>
+          </thead>
+          <tbody id="coinRateTableBody">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- ============================================================= -->
+    <!-- TAB 5: 🎒 KHO ĐỒ (INVENTORY NET WORTH) -->
+    <!-- ============================================================= -->
+    <main class="tab-pane" id="pane-inventory" style="display: none;">
+      <!-- Net Worth Card -->
+      <div class="net-worth-card">
+        <div class="nw-label">TỔNG GIÁ TRỊ KHO NÔNG TRẠI</div>
+        <div class="nw-value-row">
+          <span class="nw-sfl" id="invTotalSfl">0.00 SFL</span>
+          <span class="nw-usd" id="invTotalUsd">≈ $0.00 USD</span>
+        </div>
+        <div class="nw-sub" id="invSubInfo">Đang kiểm kê vật phẩm...</div>
+      </div>
+
+      <!-- Controls -->
+      <div class="inv-controls">
+        <div class="search-box inv-search">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="invSearchInput" class="search-input" placeholder="Lọc đồ trong kho...">
+        </div>
+        <button class="btn-tax-toggle" id="btnToggleTax">
+          <span>Thuế chợ 10%:</span>
+          <span class="tax-badge" id="taxBadge">Chưa trừ</span>
+        </button>
+      </div>
+
+      <!-- Inventory Items List -->
+      <div class="inv-list" id="invListContainer">
+        <!-- Populated dynamically -->
+      </div>
+    </main>
+
+      <!-- ============================================================= -->
+      <!-- TAB 6: ⛏️ LỢI NHUẬN (PROFIT CALCULATOR) -->
+      <!-- ============================================================= -->
+      <main class="tab-pane" id="pane-profit" style="display: none;">
+        <div class="profit-header-card">
+          <h3>⛏️ Phân Tích Lợi Nhuận Khai Thác Tài Nguyên</h3>
+          <p>Tính toán lợi nhuận ròng dựa trên chi phí chế tạo dụng cụ (Rìu, Cuốc) theo giá thị trường P2P và giá Coin thực tế so với sản lượng thu hoạch.</p>
+        </div>
+
+        <div class="profit-cards" id="profitCardsContainer">
+          <!-- Populated dynamically -->
+        </div>
+      </main>
+
+      <!-- ============================================================= -->
+      <!-- TAB 7: 🌸 HOA & LAI TẠO (FLOWERS) -->
+      <!-- ============================================================= -->
+      <main class="tab-pane" id="pane-flowers" style="display: none;">
+        <div class="flowers-view-container">
+          <!-- Suggested Flower Goals -->
+          <div class="flowers-goals-card">
+            <div class="flowers-goal-section">
+              <div class="flowers-goal-badge">
+                <img src="img/Flower.png" style="width: 16px; height: 16px;" alt="Flower">
+                <span>🌼 Mục Tiêu Hoa Cần Trồng (Suggested Flower Goals)</span>
+              </div>
+              <p class="flowers-goal-desc">Các loại hoa được khuyến nghị trồng trước để hoàn thành các đơn hàng giao hàng sắp tới.</p>
+              <div class="flowers-pills-wrap" id="flowerDeliveryGoals">
+                <!-- Populated dynamically by app.js -->
+              </div>
+            </div>
+
+            <div class="flowers-goal-section" style="margin-top: 6px; border-top: 1px solid #334155; padding-top: 8px;">
+              <div class="flowers-goal-badge">
+                <img src="img/coin.png" style="width: 16px; height: 16px;" alt="Market">
+                <span>💎 Hoa Giá Trị Cao Chợ P2P (Marketplace Limited)</span>
+              </div>
+              <p class="flowers-goal-desc">Những loài hoa đang có giá trị cao trên thị trường, thu hoạch bán kiếm lời.</p>
+              <div class="flowers-pills-wrap" id="flowerMarketGoals">
+                <!-- Populated dynamically by app.js -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Flower Growth Recipes Header -->
+          <div class="flowers-header-bar">
+            <h4 class="flowers-header-title">
+              <span>🌸</span> Bảng Tra Cứu Công Thức Lai Hoa (Growth Recipes)
+            </h4>
+          </div>
+
+          <!-- Seed Groups Accordion -->
+          <div class="flowers-list-container" id="flowersListContainer">
+            <!-- Populated dynamically by app.js from flowerData.js -->
+          </div>
+        </div>
+      </main>
+
+      <!-- ============================================================= -->
+      <!-- TAB 8: 🧪 PHA CHẾ THUỐC (POTION HOUSE) -->
+      <!-- ============================================================= -->
+      <main class="tab-pane" id="pane-potion" style="display: none;">
+        <div class="potion-view-container">
+          <!-- Header Bar -->
+          <div class="potion-header-bar">
+            <h4 class="potion-header-title">
+              <span>🧪</span> Potion House Solver
+            </h4>
+            <div class="potion-actions">
+              <button class="btn-potion-tool btn-demo-play" id="btnPotionDemoNew" title="Khởi tạo ván giải mã thử nghiệm">🎲 Ván mới</button>
+              <button class="btn-potion-tool" id="btnPotionReset" title="Làm mới trạng thái">🔄 Làm mới</button>
+            </div>
+          </div>
+
+          <!-- NPC Dialogue Speech Bubble -->
+          <div class="npc-dialogue-card">
+            <div class="npc-avatar-wrap">
+              <img src="img/potion/potion_npc.png" class="npc-avatar-img" alt="Potion NPC">
+            </div>
+            <div class="npc-dialogue-bubble">
+              <div class="npc-speaker-name">Alchemist Assistant</div>
+              <div class="npc-speech-text" id="potionNpcText">Đang phân tích trạng thái thí nghiệm Potion House...</div>
+            </div>
+          </div>
+
+          <!-- Round Status Banner -->
+          <div class="potion-status-banner" id="potionStatusBanner">
+            <span class="potion-round-tag" id="potionRoundText">Lượt: 1 / 3</span>
+            <span class="potion-cand-tag">Số khả năng còn lại: <span class="potion-cand-count" id="potionCandCount">2401</span></span>
+          </div>
+
+          <!-- Brewing History Card -->
+          <div class="potion-panel-card">
+            <div class="potion-panel-header">
+              <span class="potion-panel-title">📜 Lịch Sử Pha Chế (Brewing History)</span>
+            </div>
+            <div class="attempt-history-list" id="potionHistoryList">
+              <div style="font-size: 11px; color: #94a3b8; font-style: italic; padding: 4px 0;">Chưa có lượt pha chế nào. Hãy chọn tổ hợp gợi ý bên dưới!</div>
+            </div>
+          </div>
+
+          <!-- Glowing Suggested Combination Card -->
+          <div class="suggested-guess-section" id="potionSuggestSection">
+            <div class="suggested-guess-title">
+              <span>⚡ TỔ HỢP GỢI Ý TỐI ƯU TIẾP THEO:</span>
+              <button class="btn-potion-tool btn-demo-play" id="btnPotionStepDemo" style="display: none; padding: 2px 6px; font-size: 10px;">🧪 Thử lượt này</button>
+            </div>
+            <div class="suggested-slots-grid" id="potionSuggestSlots">
+              <!-- Populated dynamically by app.js -->
+            </div>
+          </div>
+
+          <!-- Possible Solutions Card (Displayed when candidates <= 10) -->
+          <div class="possible-solutions-panel" id="potionPossiblePanel" style="display: none;">
+            <span class="possible-title">🎯 Các Đáp Án Khả Thi Còn Lại (Possible Solutions):</span>
+            <div class="possible-list" id="potionPossibleList">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- ============================================================= -->
+      <!-- TAB 9: 🍗 BẢNG MÓN ĂN THÚ CƯNG (FOOD LIST - PETS) -->
+      <!-- ============================================================= -->
+      <main class="tab-pane" id="pane-foodlist" style="display: none;">
+        <div class="food-list-container">
+          <!-- Food List Header Bar -->
+          <div class="food-header-bar">
+            <div class="food-title-box">
+              <span class="food-title-icon">🍗</span>
+              <div class="food-title-content">
+                <h2 class="food-main-title">Food List</h2>
+              </div>
+            </div>
+
+            <div class="food-global-controls">
+              <div class="food-max-cost-group">
+                <label class="food-control-lbl" for="foodMaxCostInput">MAX COST / ⚡</label>
+                <div class="food-input-btn-combo">
+                  <input type="number" id="foodMaxCostInput" class="food-max-cost-input" placeholder="0.003" step="0.0001" min="0">
+                  <button class="btn-food-autofill" id="btnFoodAutoFill">Auto fill</button>
+                </div>
+              </div>
+
+              <div class="food-sort-group">
+                <label class="food-control-lbl" for="foodSortSelect">SORT BY:</label>
+                <select id="foodSortSelect" class="food-sort-select">
+                  <option value="lowest">Lowest Cost</option>
+                  <option value="highest">Highest Cost</option>
+                  <option value="alphabetical">Alphabetical</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 Columns Side-by-Side (Easy, Medium, Hard) -->
+          <div class="food-columns-wrapper">
+            <div class="food-columns-grid">
+              <!-- Column 1: Easy Foods -->
+              <div class="food-column" id="col-easy">
+                <div class="food-col-header">
+                  <div class="food-col-title-wrap">
+                    <span class="food-col-title">EASY FOODS</span>
+                    <span class="food-col-counter" id="easyColCount">(10/14)</span>
+                  </div>
+                  <div class="food-col-actions">
+                    <button class="btn-food-action btn-select-all" data-tier="easy">Select All</button>
+                    <button class="btn-food-action btn-deselect-all" data-tier="easy">Deselect All</button>
+                  </div>
+                </div>
+
+                <div class="food-col-reward-banner">
+                  <span class="reward-xp">+20 XP</span>
+                  <span class="reward-sep">|</span>
+                  <span class="reward-energy">+20 ⚡</span>
+                </div>
+
+                <div class="food-cards-list" id="foodCardsEasy"></div>
+              </div>
+
+              <!-- Column 2: Medium Foods -->
+              <div class="food-column" id="col-medium">
+                <div class="food-col-header">
+                  <div class="food-col-title-wrap">
+                    <span class="food-col-title">MEDIUM FOODS</span>
+                    <span class="food-col-counter" id="mediumColCount">(16/26)</span>
+                  </div>
+                  <div class="food-col-actions">
+                    <button class="btn-food-action btn-select-all" data-tier="medium">Select All</button>
+                    <button class="btn-food-action btn-deselect-all" data-tier="medium">Deselect All</button>
+                  </div>
+                </div>
+
+                <div class="food-col-reward-banner">
+                  <span class="reward-xp">+100 XP</span>
+                  <span class="reward-sep">|</span>
+                  <span class="reward-energy">+100 ⚡</span>
+                </div>
+
+                <div class="food-cards-list" id="foodCardsMedium"></div>
+              </div>
+
+              <!-- Column 3: Hard Foods -->
+              <div class="food-column" id="col-hard">
+                <div class="food-col-header">
+                  <div class="food-col-title-wrap">
+                    <span class="food-col-title">HARD FOODS</span>
+                    <span class="food-col-counter" id="hardColCount">(4/24)</span>
+                  </div>
+                  <div class="food-col-actions">
+                    <button class="btn-food-action btn-select-all" data-tier="hard">Select All</button>
+                    <button class="btn-food-action btn-deselect-all" data-tier="hard">Deselect All</button>
+                  </div>
+                </div>
+
+                <div class="food-col-reward-banner">
+                  <span class="reward-xp">+300 XP</span>
+                  <span class="reward-sep">|</span>
+                  <span class="reward-energy">+300 ⚡</span>
+                </div>
+
+                <div class="food-cards-list" id="foodCardsHard"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- ============================================================= -->
+      <!-- TAB 10: 🧠 TRỢ LÝ LẬT THẺ (MEMORY MINIGAME) -->
+      <!-- ============================================================= -->
+      <main class="tab-pane" id="pane-memory">
+        <div class="memory-container">
+          <!-- Top Status & Controls Bar -->
+          <div class="memory-top-bar">
+            <div class="memory-status-box" id="memoryStatusBox">
+              <span class="memory-status-dot dot-inactive" id="memoryStatusDot"></span>
+              <div class="memory-status-info">
+                <span class="memory-status-title" id="memoryStatusTitle">Chờ mở Minigame Memory</span>
+                <span class="memory-status-sub" id="memoryStatusSub">Mở minigame "Memory" trong Sunflower Land để tự động kết nối</span>
+              </div>
+            </div>
+            
+            <div class="memory-controls-group">
+              <button class="btn-memory-action" id="btnMemoryPractice" title="Tập luyện lật thẻ không tốn vé game">
+                <span>🎮</span> Luyện Tập
+              </button>
+              <button class="btn-memory-action" id="btnMemoryReset" title="Đặt lại ván đào / xóa bộ nhớ">
+                <span>🔄</span> Đặt Lại
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Stats Row -->
+          <div class="memory-stats-grid">
+            <div class="m-stat-card">
+              <span class="m-stat-lbl">Đã Phát Hiện</span>
+              <span class="m-stat-val" id="memStatRevealed">0 / 30</span>
+            </div>
+            <div class="m-stat-card">
+              <span class="m-stat-lbl">Đã Giải (Ghép Cặp)</span>
+              <span class="m-stat-val text-green" id="memStatSolved">0 / 15 đôi</span>
+            </div>
+            <div class="m-stat-card">
+              <span class="m-stat-lbl">Cặp Sẵn Sàng Ăn</span>
+              <span class="m-stat-val text-gold" id="memStatReady">0 cặp</span>
+            </div>
+            <div class="m-stat-card">
+              <span class="m-stat-lbl">Lượt Đi Còn</span>
+              <span class="m-stat-val" id="memStatMoves">--</span>
+            </div>
+          </div>
+
+          <!-- Ready Pairs Alert Banner -->
+          <div class="memory-ready-banner" id="memoryReadyBanner" style="display: none;">
+            <div class="ready-banner-header">
+              <span class="ready-badge">🎯 CẶP SẴN SÀNG ĂN NGAY:</span>
+              <span class="ready-sub">Đã nhớ vị trí cả 2 thẻ, bấm để ghép ngay!</span>
+            </div>
+            <div class="ready-pairs-list" id="readyPairsList"></div>
+          </div>
+
+          <!-- 5x6 Board Matrix View -->
+          <div class="memory-board-card">
+            <div class="memory-board-header">
+              <div class="m-board-title-wrap">
+                <span class="m-board-title">BÀN LẬT THẺ (5x6 - 30 THẺ)</span>
+              </div>
+              <span class="m-board-hint" id="memBoardHint">Thẻ sẽ tự lật khi bạn chơi trong game</span>
+            </div>
+
+            <!-- Board Grid Wrapper with Axis Labels -->
+            <div class="memory-grid-wrapper">
+              <div class="memory-col-labels">
+                <span class="m-corner-spacer"></span>
+                <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
+              </div>
+              <div class="memory-grid-body">
+                <div class="memory-row-labels">
+                  <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                </div>
+                <div class="memory-grid" id="memoryGrid">
+                  <!-- 30 Card Cells generated by app.js -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Instructions Card -->
+          <div class="memory-guide-card">
+            <div class="guide-title">💡 Hướng Dẫn Sử Dụng Trợ Lý Lật Thẻ</div>
+            <ul class="guide-list">
+              <li><b>🧠 Tự Động Ghi Nhớ:</b> Khi bạn vào minigame Memory trên Sunflower Land và lật bất kỳ thẻ nào, công cụ sẽ tự động lưu lại vị trí và nông sản của thẻ đó.</li>
+              <li><b>🎯 Phát Hiện Cặp Trùng:</b> Ngay khi phát hiện 2 thẻ cùng loại, hệ thống sẽ đổi màu viền trùng khớp và hiển thị thông báo "Cặp ăn ngay" để bạn bấm.</li>
+              <li><b>🎮 Luyện Tập (Simulator):</b> Bấm nút "Luyện Tập" để chơi thử minigame lật thẻ không giới hạn ngay trong tiện ích.</li>
+            </ul>
+          </div>
+        </div>
+      </main>
+
+      <!-- ============================================================= -->
+      <!-- TAB 11: 🏛️ TRỢ LÝ ĐỀN CHAAC (CHAAC'S TEMPLE - SIMON SAYS) -->
+      <!-- ============================================================= -->
+      <main class="tab-pane" id="pane-chaac">
+        <div class="chaac-container">
+          <!-- Top Status & Controls Bar -->
+          <div class="chaac-top-bar">
+            <div class="chaac-status-box" id="chaacStatusBox">
+              <span class="chaac-status-dot dot-inactive" id="chaacStatusDot"></span>
+              <div class="chaac-status-info">
+                <span class="chaac-status-title" id="chaacStatusTitle">Chờ mở Đền Chaac</span>
+                <span class="chaac-status-sub" id="chaacStatusSub">Mở minigame "Chaac's Temple" trong Sunflower Land để tự động kết nối</span>
+              </div>
+            </div>
+            
+            <div class="chaac-controls-group">
+              <button class="btn-chaac-action" id="btnChaacPractice" title="Luyện tập ghi nhớ chuỗi ánh sáng không tốn vé game">
+                <span>🎮</span> Luyện Tập
+              </button>
+              <button class="btn-chaac-action" id="btnChaacReset" title="Đặt lại trạng thái">
+                <span>🔄</span> Đặt Lại
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Stats Row -->
+          <div class="chaac-stats-grid">
+            <div class="c-stat-card">
+              <span class="c-stat-lbl">Vòng Hiện Tại</span>
+              <span class="c-stat-val text-teal" id="chaacStatRound">-- / 5</span>
+            </div>
+            <div class="c-stat-card">
+              <span class="c-stat-lbl">Độ Dài Chuỗi</span>
+              <span class="c-stat-val text-gold" id="chaacStatLength">-- bước</span>
+            </div>
+            <div class="c-stat-card">
+              <span class="c-stat-lbl">Mạng Sống</span>
+              <span class="c-stat-val text-red" id="chaacStatLives">❤️❤️❤️</span>
+            </div>
+            <div class="c-stat-card">
+              <span class="c-stat-lbl">Tiến Độ Bước</span>
+              <span class="c-stat-val" id="chaacStatProgress">0 / 0</span>
+            </div>
+          </div>
+
+          <!-- Next Step Beacon Banner -->
+          <div class="chaac-next-banner" id="chaacNextBanner">
+            <div class="next-banner-badge" id="chaacNextBadge">👉 BƯỚC TIẾP THEO:</div>
+            <div class="next-piece-display" id="chaacNextPieceDisplay">
+              <span class="next-piece-icon">⚡</span>
+              <span class="next-piece-name">Chờ bắt đầu vòng...</span>
+            </div>
+          </div>
+
+          <!-- Sequence Steps Card -->
+          <div class="chaac-card">
+            <div class="chaac-card-header">
+              <span class="chaac-card-title">CHUỖI ÁNH SÁNG CẦN BẤM (THEO THỨ TỰ)</span>
+              <span class="chaac-card-hint" id="chaacSeqHint">Tự động phát hiện khi đèn sáng</span>
+            </div>
+            <div class="chaac-seq-track" id="chaacSeqTrack">
+              <div class="chaac-empty-hint">Chưa có chuỗi nào được phát. Hãy bắt đầu ván trong game hoặc bấm Luyện Tập!</div>
+            </div>
+          </div>
+
+          <!-- 9-Stone Mandala Diamond View -->
+          <div class="chaac-card">
+            <div class="chaac-card-header">
+              <span class="chaac-card-title">SƠ ĐỒ 9 PHIẾN ĐÁ ĐỀN CHAAC</span>
+              <span class="chaac-card-hint">Mô phỏng vị trí trực tiếp trong game</span>
+            </div>
+
+            <div class="chaac-mandala-wrapper">
+              <div class="chaac-mandala-grid" id="chaacMandalaGrid">
+                <!-- 5 rows of temple stones -->
+                <div class="c-mandala-row row-1">
+                  <div class="c-stone-btn" data-key="topgreen" data-id="6">
+                    <span class="c-stone-icon">🟢</span>
+                    <span class="c-stone-lbl">Lục Đỉnh</span>
+                    <span class="c-stone-sub">Bắc (Trên)</span>
+                  </div>
+                </div>
+                <div class="c-mandala-row row-2">
+                  <div class="c-stone-btn" data-key="midyellow" data-id="1">
+                    <span class="c-stone-icon">🟡</span>
+                    <span class="c-stone-lbl">Vàng Giữa</span>
+                    <span class="c-stone-sub">Tây Bắc</span>
+                  </div>
+                  <div class="c-stone-btn" data-key="midblue" data-id="3">
+                    <span class="c-stone-icon">🔵</span>
+                    <span class="c-stone-lbl">Lam Giữa</span>
+                    <span class="c-stone-sub">Đông Bắc</span>
+                  </div>
+                </div>
+                <div class="c-mandala-row row-3">
+                  <div class="c-stone-btn" data-key="topblue" data-id="7">
+                    <span class="c-stone-icon">🔵</span>
+                    <span class="c-stone-lbl">Lam Trái</span>
+                    <span class="c-stone-sub">Tây (Trái)</span>
+                  </div>
+                  <div class="c-stone-btn c-stone-core" data-key="core" data-id="0">
+                    <span class="c-stone-icon">⚪</span>
+                    <span class="c-stone-lbl">Trọng Tâm</span>
+                    <span class="c-stone-sub">Tâm Đền</span>
+                  </div>
+                  <div class="c-stone-btn" data-key="topred" data-id="8">
+                    <span class="c-stone-icon">🔴</span>
+                    <span class="c-stone-lbl">Đỏ Phải</span>
+                    <span class="c-stone-sub">Đông (Phải)</span>
+                  </div>
+                </div>
+                <div class="c-mandala-row row-4">
+                  <div class="c-stone-btn" data-key="midred" data-id="4">
+                    <span class="c-stone-icon">🔴</span>
+                    <span class="c-stone-lbl">Đỏ Giữa</span>
+                    <span class="c-stone-sub">Tây Nam</span>
+                  </div>
+                  <div class="c-stone-btn" data-key="midgreen" data-id="2">
+                    <span class="c-stone-icon">🟢</span>
+                    <span class="c-stone-lbl">Lục Giữa</span>
+                    <span class="c-stone-sub">Đông Nam</span>
+                  </div>
+                </div>
+                <div class="c-mandala-row row-5">
+                  <div class="c-stone-btn" data-key="topyellow" data-id="5">
+                    <span class="c-stone-icon">🟡</span>
+                    <span class="c-stone-lbl">Vàng Đáy</span>
+                    <span class="c-stone-sub">Nam (Dưới)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Guide Card -->
+          <div class="chaac-guide-card">
+            <div class="guide-title">💡 Hướng Dẫn Sử Dụng Trợ Lý Đền Chaac</div>
+            <ul class="guide-list">
+              <li><b>🏛️ Tự Động Bắt Chuỗi:</b> Khi bạn vào Đền Chaac (Chaac's Temple), tiện ích sẽ tự động kết nối và đọc chuỗi ánh sáng của máy phát đèn.</li>
+              <li><b>👉 Chỉ Dẫn Bước Kế Tiếp:</b> Tiện ích sẽ hiển thị to rõ bước tiếp theo cần bấm (kèm phát sáng viền trên sơ đồ và trên màn hình game), giúp bạn không bao giờ bấm nhầm hay quên chuỗi.</li>
+              <li><b>🎮 Chế Độ Luyện Tập:</b> Bấm "Luyện Tập" để rèn luyện trí nhớ và phản xạ với chuỗi ánh sáng mà không lo mất lượt hay token!</li>
+            </ul>
+          </div>
+        </div>
+      </main>
+      </div> <!-- /.panes-container -->
+    </div> <!-- /.main-viewport -->
+  </div> <!-- /.app-layout -->
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
