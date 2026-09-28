@@ -1,0 +1,111 @@
+{
+  "summary": {
+    "numGames": 500,
+    "durationMs": 111859,
+    "mean": "20.46",
+    "p90": 27,
+    "p95": 29,
+    "maxV": 37,
+    "minV": 5,
+    "med": 20,
+    "groupSub16": 77,
+    "groupA": 346,
+    "groupB": 75,
+    "groupOver35": 2
+  },
+  "bước1_reasons": {
+    "Max Entropy Probe": 679,
+    "Camel Bone Clue": 144,
+    "Crab Intersect": 85,
+    "Stuck-Detector Probe": 266,
+    "Bone Search (pBone)": 89,
+    "High Probability Target": 36,
+    "Final Target Hunt (2 found)": 668,
+    "Crab Neighbor (Forced)": 54,
+    "Guaranteed 100%": 49,
+    "Dynamic Target Probe (Pattern Coverage)": 55
+  },
+  "bước2_sparse": {
+    "sparseGames": 438,
+    "denseGames": 38,
+    "mixedGames": 24,
+    "sparsePatternStats": {
+      "ARTEFACT_THIRTEEN": {
+        "total": 61,
+        "countA": 41,
+        "countB": 11
+      },
+      "ARTEFACT_EIGHT": {
+        "total": 95,
+        "countA": 69,
+        "countB": 13
+      },
+      "ARTEFACT_ELEVEN": {
+        "total": 93,
+        "countA": 62,
+        "countB": 16
+      },
+      "ARTEFACT_SEVEN": {
+        "total": 80,
+        "countA": 48,
+        "countB": 22
+      },
+      "ARTEFACT_SIXTEEN": {
+        "total": 98,
+        "countA": 73,
+        "countB": 14
+      },
+      "ARTEFACT_TWO": {
+        "total": 99,
+        "countA": 73,
+        "countB": 9
+      },
+      "ARTEFACT_SEVENTEEN": {
+        "total": 88,
+        "countA": 62,
+        "countB": 11
+      },
+      "ARTEFACT_FOURTEEN": {
+        "total": 67,
+        "countA": 40,
+        "countB": 19
+      }
+    }
+  },
+  "bước3_coverage": {
+    "bSparse": 71,
+    "bDense": 3,
+    "bMixed": 1,
+    "totalB": 75
+  },
+  "bước4_zeroJoint": {
+    "groupA": {
+      "turnsTotal": 7043,
+      "turnsZero": 0,
+      "with1t": 2411,
+      "with1tZero": 0,
+      "with2t": 2091,
+      "with2tZero": 0
+    },
+    "groupB": {
+      "turnsTotal": 2125,
+      "turnsZero": 0,
+      "with1t": 639,
+      "with1tZero": 0,
+      "with2t": 744,
+      "with2tZero": 0
+    }
+  },
+  "bước5_convergence": {
+    "groupA": {
+      "avg": "12.5",
+      "count": 205,
+      "total": 346
+    },
+    "groupB": {
+      "avg": "15.0",
+      "count": 49,
+      "total": 75
+    }
+  }
+}

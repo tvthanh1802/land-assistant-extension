@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Primary Meta Tags -->
+  <title>SFL DIGGING ASSISTANT – Explore the Island Grid</title>
+  <meta name="description" content="Join the SFL CRAB community to dig, discover treasures, and share grid finds." />
+  <link rel="canonical" href="https://d1g.uk/" />
+
+  <!-- Open Graph: single image -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://d1g.uk/" />
+  <meta property="og:title" content="SFL DIGGING ASSISTANT – Explore the Island Grid" />
+  <meta property="og:description" content="Join the SFL CRAB community to dig, discover treasures, and share grid finds." />
+  <meta property="og:image" content="https://d1g.uk/images/sample-grid.png" />
+  <meta property="og:image:width" content="988" />
+  <meta property="og:image:height" content="715" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://d1g.uk/" />
+  <meta name="twitter:title" content="SFL DIGGING ASSISTANT – Explore the Island Grid" />
+  <meta name="twitter:description" content="Join the SFL CRAB community to dig, discover treasures, and share grid finds." />
+  <meta name="twitter:image" content="https://d1g.uk/images/sample-grid.png" />
+
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3e70dc47e65b4f60a99e6890255ec4b9"}'></script><!-- End Cloudflare Web Analytics -->
+
+  <!-- Favicon -->
+  <link rel="icon" href="/crab-grid.png" />
+  <!-- Apple touch icon for iOS -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/crab-grid.png" />
+
+  <script type="module" crossorigin src="/assets/main-CHzSo3ia.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-CCirg8kZ.css">
+</head>
+
+<body>
+  <script type="application/json" id="chat-widget-config-001">
+    {
+      "chatbot": {
+        "instructions": "",
+        "position": "bottom-left"
+      }
+    }
+  </script>
+  <div id="app"></div>
+</body>
+
+</html>
